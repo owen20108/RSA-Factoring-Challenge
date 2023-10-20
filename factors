@@ -1,31 +1,31 @@
 #!/usr/bin/python3
-
+# Library to get command-line arguments
 import sys
-import math
 
-def factorize(number):
-    factors = []
-    for i in range(2, int(math.sqrt(number)) + 1):
-        while number % i == 0:
-            factors.append(i)
-            number //= i
-    if number > 1:
-        factors.append(number)
-    return factors
+# Function to unpack a number into its prime factors
+def prime_factors():
+    """
+    Function prime_factors to read a file, convert numbers, and format them as n=p*q
+    """
+    try:
+        input_file = sys.argv[1]
+        with open(input_file) as file:
+            for number_str in file:
+                number = int(number_str)
+                if number % 2 == 0:
+                    print("{}={}*{}".format(number, number // 2, 2))
+                    continue
+                divisor = 3
+                while divisor <= number // 2:
+                    if number % divisor == 0:
+                        print("{}={}*{}".format(number, number // divisor, divisor))
+                        break
+                    divisor += 2
+                if divisor == (number // 2) + 1:
+                    print("{}={}*{}".format(number, number, 1))
+    except (IndexError, FileNotFoundError):
+        pass
 
-if len(sys.argv) != 2:
-    print("Usage: factors <file>")
-    sys.exit(1)
-
-input_file = sys.argv[1]
-
-with open(input_file, "r") as file:
-    numbers = file.read().splitlines()
-
-for num in numbers:
-    num = int(num)
-    factors = factorize(num)
-    if len(factors) == 2:
-        print(f"{num}={factors[0]}*{factors[1]}")
-
+# Auto-start the prime_factors function
+prime_factors()
 
