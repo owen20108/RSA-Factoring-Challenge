@@ -1,0 +1,86 @@
+#!/usr/bin/python3
+
+# This is a Python script to factors large RSA numbers use the trial division method
+
+
+import sys
+import time
+from math import sqrt, ceil
+
+
+# declare  function test a number is prime
+def test_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(sqrt(num)) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+
+# declare  function  factor single RSA number with  trial division method
+def factor_rsa_number(num):
+    # set  empty list  store  prime factors of num
+    factor_prime = []
+    # test if 2 is a factor of num
+    while num % 2 == 0:
+        factor_prime.append(2)
+        num //= 2
+    # test  odd prime factors up to sqrt(num)
+    i = 3
+    while i <= sqrt(num):
+        if num % i == 0:
+            factor_prime.append(i)
+            num //= i
+        else:
+            i += 2
+    # test num is still greater than 2, it must be prime
+    if num > 2:
+        factor_prime.append(num)
+    # If only one factor is found, return it as p and n//p as q
+    if len(factor_prime) == 1:
+        p = factor_prime[0]
+        q = num // p
+        return (p, q)
+    # is more  one factor is found, recursive factor each factor until all are prime
+    else:
+        pq = []
+        for factor in factor_prime:
+            if test_prime(factor):
+                pq.append(factor)
+            else:
+                p, q = factor_rsa_number(factor)
+                pq.append(p)
+                pq.append(q)
+        return tuple(pq)
+
+
+# Read  input file name by  command line argument
+input_file = sys.argv[1]
+
+
+# Read the RSA number from the input file
+with open(input_file, 'r') as f:
+    rsa_number = [int(line.strip()) for line in f.readlines()]
+
+
+# Start  timer to get the execution time
+start_timer = time.time()
+
+
+# Factor each RSA number  file use  trial division method
+for n in rsa_number:
+    p, q = factor_rsa_number(n)
+    print(f"{n}={q}*{p}")
+
+
+# Stop the timer and calculate the execution time
+end_timer = time.time()
+exe_timer = end_timer - start_timer
+
+
+# Print the execution time in seconds
+print("Total execution time: ", exe_timer, " seconds")
+
+
+
