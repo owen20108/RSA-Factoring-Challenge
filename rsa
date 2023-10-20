@@ -1,49 +1,29 @@
-#!/usr/bin/env bash
-# test a factors challenge
+#!/usr/bin/python3
+def is_prime(num):
+    if num <= 1:
+        return False
+    if num == 2:
+        return True
+    if num % 2 == 0:
+        return False
+    for i in range(3, int(num**0.5) + 1, 2):
+        if num % i == 0:
+            return False
+    return True
 
-test_factor()
-{
-	if [ $# -ne 3 ];
-        then
-                args=("$@")
-                countr=0
-                numb2=1
-                for a in ${args[*]};
-                do
-                        if [ $countr -gt 1 ];
-                        then
-                                numb2=$(echo $a*$numb2 | bc)
-                        fi
-                        countr=$((countr + 1))
-                done
-        else
-                numb2=$3
-        fi
+def find_prime_factors(n):
+    if n <= 1:
+        return "Number must be greater than 1."
+    
+    for i in range(2, n + 1):
+        if n % i == 0 and is_prime(i) and is_prime(n // i):
+            p, q = i, n // i
+            return f"p = {p}, q = {q}"
+    
+    return "Unable to find prime factors."
 
-        numb1=$2
-        num=$(echo "$1" | tr ':' '=')
+if __name__ == "__main__":
+    n = int(input("Enter the number to factorize (RSA challenge number): "))
+    result = find_prime_factors(n)
+    print(result)
 
-        result=$(echo "if($numb2 > $numb1) 1 else 0" | bc)
-	        if ((result == 1)); then
-		        numcp=$numb1
-		        numb1=$numb2
-		        numb2=$numcp
-                fi
-
-        echo "$num$numb1*$numb2"
-}
-
-if [ $# -ne 1 ]
-then
-        echo 'Usage: factors <file>'
-        exit 1
-else
-
-        while read i
-        do
-
-                result=$(factor "$i")
-                test_factor $result
-
-        done < "$1"
-fi
