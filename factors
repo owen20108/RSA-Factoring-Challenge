@@ -1,31 +1,34 @@
 #!/usr/bin/python3
-# Library to get command-line arguments
-import sys
+"""Factorize  numbers in a file   product  two smaller numbers."""
 
-# Function to unpack a number into its prime factors
-def prime_factors():
-    """
-    Function prime_factors to read a file, convert numbers, and format them as n=p*q
-    """
-    try:
-        input_file = sys.argv[1]
-        with open(input_file) as file:
-            for number_str in file:
-                number = int(number_str)
-                if number % 2 == 0:
-                    print("{}={}*{}".format(number, number // 2, 2))
-                    continue
-                divisor = 3
-                while divisor <= number // 2:
-                    if number % divisor == 0:
-                        print("{}={}*{}".format(number, number // divisor, divisor))
-                        break
-                    divisor += 2
-                if divisor == (number // 2) + 1:
-                    print("{}={}*{}".format(number, number, 1))
-    except (IndexError, FileNotFoundError):
-        pass
+from sys import argv
 
-# Auto-start the prime_factors function
-prime_factors()
+def find_factors_and_print(number_to_factorize):
+    """get two small numbers  multiply to give  number."""
+    divisor = 2
+
+    if number_to_factorize < 2:
+        return
+    
+    while number_to_factorize % divisor:
+        divisor += 1
+    print("{:.0f} = {:.0f} * {:.0f}".format(number_to_factorize, number_to_factorize / divisor, divisor))
+
+if len(argv) != 2:
+    print("Usage: {} <filename>".format(argv[0]))
+    exit(1)
+
+filename = argv[1]
+
+try:
+    with open(filename) as file:
+        for line in file:
+            number_to_factorize = int(line.strip())
+            find_factors_and_print(number_to_factorize)
+except FileNotFoundError:
+    print(f"Error: File '{filename}' not found.")
+except ValueError:
+    print("Error: Invalid data in the file.")
+except Exception as e:
+    print(f"An unexpected error occurred: {str(e)}")
 
