@@ -1,32 +1,36 @@
 #!/usr/bin/python3
-import sys
+"""Factorize given set of numbers in a file into a product of two smaller numbers"""
+from sys import argv
+import time
 
-def factorize(n):
-    for p in range(2, n):
-        if n % p == 0:
-            q = n // p
-            return f"{n}={p}*{q}"
-    return f"{n}=1*{n}"
+def factorize(number_to_check):
+    """Find two small numbers that multiply to give a given number"""
+    i = 2
 
-if len(sys.argv) != 2:
+    if number_to_check < 2:
+        return
+
+    while number_to_check % i:
+        i += 1
+    print("{0}={1}*{2}".format(number_to_check, number_to_check // i, i))
+
+if len(argv) != 2:
     print("Usage: factors <file>")
-    sys.exit(1)
-
-input_file = sys.argv[1]
+    exit(1)
 
 try:
-    with open(input_file, "r") as file:
-        for line in file:
-            n = int(line.strip())
-            factorization = factorize(n)
-            print(factorization)
+    with open(argv[1]) as file:
+        line = file.readline()
+
+        while line:
+            number_to_check = int(line.strip())
+            factorize(number_to_check)
+            line = file.readline()
 except FileNotFoundError:
-    print(f"File not found: {input_file}")
-    sys.exit(1)
-except ValueError:
-    print("Invalid input. All lines in the file should be valid natural numbers.")
-    sys.exit(1)
+    print(f"File not found: {argv[1]}")
 except Exception as e:
     print(f"An error occurred: {str(e)}")
-    sys.exit(1)
+
+# Ensure the program exits after 5 seconds
+time.sleep(5)
 
