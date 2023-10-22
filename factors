@@ -1,33 +1,19 @@
 #!/usr/bin/python3
-"""Module that factors as many numbers as possible
-into a product of two smaller numbers."""
-from sys import argv
+"""Factorizes as many numbers as possible into a product of two smaller numbers."""
+import sys
 
-def factorization(value):
-    """Print a simple factorization of an integer > 1."""
-    i = 2
+with open(sys.argv[1], "r") as file:
+    lines = file.readlines()
+    numbers = [int(line) for line in lines]
+    numbers.sort()
 
-    if value < 2:
-        return
-    print()
-    print(value, "<- value before")
-    while value % i:
-        i += 1
-    print("{:.0f} = {:.0f} * {:.0f}".format(value, value / i, i))
-    print(value, "<- value after")
-    print()
-
-if len(argv) != 2:
-    exit()
-
-try:
-    with open(argv[1]) as file:
-        line = file.readline()
-
-        while line != "":
-            value = int(line.split('\n')[0])
-            factorization(value)
-            line = file.readline()
-except:
-    pass
+    for num in numbers:
+        divisor = 2
+        while divisor < num:
+            if num % divisor == 0:
+                factor = num // divisor
+                print("{} = {} * {}".format(num, factor, divisor))
+                break
+            else:
+                divisor += 1
 
