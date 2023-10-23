@@ -1,35 +1,35 @@
 #!/usr/bin/python3
-"""Factorizes natural numbers from a file into a product of two smaller numbers."""
 import sys
 
-def factorize_numbers(file_path):
+
+def factorize(number):
+    factors = []
+    for i in range(2, number // 2 + 1):
+        if number % i == 0:
+            factors.append((i, number // i))
+    return factors
+
+
+def main(file_path):
     try:
         with open(file_path, "r") as file:
-            lines = file.readlines()
-            numbers = [int(line.strip()) for line in lines]
-
-            for num in numbers:
-                divisor = 2
-                while divisor < num:
-                    if num % divisor == 0:
-                        factor = num // divisor
-                        print("{}={}*{}".format(num, factor, divisor))
-                        break
-                    else:
-                        divisor += 1
-
+            for line in file:
+                number = int(line.strip())
+                factorizations = factorize(number)
+                for factors in factorizations:
+                    print(f"{number}={factors[0]}*{factors[1]}")
     except FileNotFoundError:
-        print("Error: File not found")
+        print(f"Error: File '{file_path}' not found.")
     except ValueError:
-        print("Error: Invalid input in the file")
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        print(
+            "Error: Invalid input in the file. All lines must be valid natural numbers greater than 1."
+        )
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: factors <file>")
         sys.exit(1)
-
     file_path = sys.argv[1]
-    factorize_numbers(file_path)
+    main(file_path)
 
